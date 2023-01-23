@@ -6,14 +6,14 @@ from torchtext.vocab import build_vocab_from_iterator
 from datetime import datetime
 
 # hyperparameters
-BATCH_SIZE = 4  # how many independent sequences will we process in parallel?
+BATCH_SIZE = 32  # how many independent sequences will we process in parallel?
 BLOCK_SIZE = 64  # what is the maximum context length for predictions?
-MAX_ITER = 5000
-EVAL_INTER = 500
+MAX_ITER = 100  # number of training iterations
+EVAL_INTER = 10
 LEARNING_RATE = 3e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EMBED = 768  # 128*num_head
 NUM_HEAD = 6
+NUM_EMBED = NUM_HEAD * 128
 NUM_LAYER = 6
 DROPOUT = 0.2
 
@@ -32,7 +32,7 @@ def decode(vocab: torchtext.vocab, enc_sec: list[int]) -> str:
 
 def build_vocab(
     path_to_data: str = "data/english.txt",
-    specials: list = ["<unk>", "<pad>", "<bos>", "<eos>"],
+    specials: list = [],
 ) -> (torchtext.vocab, int):
     """
     The function build vocabulary from the input text dataset
@@ -88,6 +88,26 @@ def get_batch(data: list[str], block_size: int, batch_size: int):
     return x, y
 
 
+@torch.no_grad()
+def estimate_loss(
+    data: list[str],
+    model: torch.nn.Module,
+    block_size: int,
+    batch_size: int,
+    eval_iters: int = 10,
+):
+    out = {}
+    model.eval()
+    losses = torch.zeros(eval_iters)
+    for k in range(eval_iters):
+        X, Y = get_batch(data=data, block_size=block_size, batch_size=batch_size)
+        logits, loss = model.forward(X, Y)
+        losses[k] = loss.item()
+    out = losses.mean()
+    model.train()
+    return out
+
+
 def load_model_from_checkpoint(
     model_class: torch.nn.Module,
     path_to_checkpoint: str = "checkpoints/state_dict_model.pt",
@@ -106,14 +126,17 @@ def load_model_from_checkpoint(
 
 
 def save_model_to_chekpoint(
-    model: torch.nn.Module, path_to_checkpoint: str = "checkpoints", suffix: str = ""
+    model: torch.nn.Module, path_to_checkpoint: str = "checkpoints", epoch: int = 0
 ):
+    # check if path exists, otherwise create it
+    if not os.path.exists(path_to_checkpoint):
+        os.makedirs(path_to_checkpoint)
 
     # datetime object containing current date and time
     now = datetime.now()
     # dd/mm/YY H:M:S
     dt_string = now.strftime("%d.%m.%Y_%H:%M:%S")
-    checkpoint_name = "model" + "_" if suffix else "" + suffix + "_" + dt_string + ".pt"
+    checkpoint_name = "checkpoint_epoch-" + str(epoch) + "_" + dt_string + ".pt"
     full_path = os.path.join(path_to_checkpoint, checkpoint_name)
     try:
         torch.save(model.state_dict(), full_path)

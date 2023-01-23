@@ -25,7 +25,6 @@ class AttentionHead(nn.Module):
         B, T, C = x.shape
         k = self.key(x)
         q = self.query(x)
-
         # compute attention scores
         # (B, T, C) @ (B, C, T) -> (B, T, T)
         wei = q @ k.transpose(-2, -1) * C**-0.5
@@ -61,9 +60,7 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, x):
         # output of the self-attention
-        print("h(x).shape list: {}".format([h(x).shape for h in self.heads]))
         out = torch.cat([h(x) for h in self.heads], dim=-1)
-        print("out complete")
         # apply the linear projection layer
         out = self.dropout(self.proj(out))
         return out
@@ -180,7 +177,7 @@ class Transformer(nn.Module):
             loss = None
         return logits, loss
 
-    def generate(self, idx: torch.Tensor, max_new_tokens: int):
+    def generate(self, idx: torch.Tensor, max_new_tokens: int, block_size: int):
         # idx is (B, T) array of indices in the current context
         for _ in range(max_new_tokens):
             # crop the context too the  last block_size tokens
