@@ -5,3 +5,4 @@ __pycache__/transformer_model.cpython-39.pyc
 __pycache__/utils.cpython-39.pyc
 checkpoints/state_dict_model.pt
 data/Encoder Stack.png
+.DS_Store
