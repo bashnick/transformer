@@ -4,9 +4,9 @@ from torch.nn import functional as F
 from utils import DEVICE
 
 
-class Head(nn.Module):
+class AttentionHead(nn.Module):
     """
-    One head of the self-attention
+    One head of the self-attention layer
     """
 
     def __init__(self, head_size, num_embed, block_size, dropout):
@@ -47,7 +47,7 @@ class MultiHeadAttention(nn.Module):
         super().__init__()
         self.heads = nn.ModuleList(
             [
-                Head(
+                AttentionHead(
                     head_size=head_size,
                     num_embed=num_embed,
                     block_size=block_size,
