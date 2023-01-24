@@ -1,5 +1,5 @@
 # Transformer implementation from scratch
-A codebase implementing a simple GPT-like model from scratch based on the [Attention is All You Need paper](https://arxiv.org/abs/1706.03762).
+A codebase implementing a simple GPT-like model from scratch based on the [Attention is All You Need paper](https://arxiv.org/abs/1706.03762). The detailed theory explanation and a step by step guide to the Transformer architecture could be found in the article [Building a GPT-like Model from Scratch with Detailed Theory and Code Implementation](https://habr.com/en/company/ods/blog/708672/).
 
 ## Getting Started 
 Follow [setup instructions here](requirements.txt) to get started.
