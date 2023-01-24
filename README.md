@@ -13,3 +13,9 @@ $ pip install requirements.txt
 
 ## Contributing
 You are welcome to contribute to the repository with your PRs!
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2023 Nikolay Bashlykov
