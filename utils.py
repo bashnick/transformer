@@ -1,6 +1,5 @@
 import os
 import torch
-import torchtext
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
 from datetime import datetime
@@ -8,8 +7,8 @@ from datetime import datetime
 # hyperparameters
 BATCH_SIZE = 32  # how many independent sequences will we process in parallel?
 BLOCK_SIZE = 64  # what is the maximum context length for predictions?
-MAX_ITER = 100  # number of training iterations
-EVAL_INTER = 10
+MAX_ITER = 5000  # number of training iterations
+EVAL_INTER = 500
 LEARNING_RATE = 3e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 NUM_HEAD = 6
@@ -18,47 +17,27 @@ NUM_LAYER = 6
 DROPOUT = 0.2
 
 
-def encode(vocab: torchtext.vocab, text_seq: str) -> list[int]:
+def encode(text_seq: str, tokenizer: any) -> torch.Tensor:
     """
-    Function to encode imput text using simple tokenizer
+    Function to encode input text using a pre-trained tokenizer and vectorized lookups
     """
-    tokenizer = get_tokenizer("basic_english")
-    return [vocab.get_stoi()[token] for token in tokenizer(text_seq)]
+    # tokenize the input text
+    tokens = tokenizer.tokenize(text_seq)
+    # convert the tokens to their corresponding ids
+    token_indices = tokenizer.convert_tokens_to_ids(tokens)
+    token_indices = torch.tensor(token_indices, dtype=torch.long)
+    return token_indices
 
 
-def decode(vocab: torchtext.vocab, enc_sec: list[int]) -> str:
-    return " ".join(vocab.get_itos()[i] for i in enc_sec)
-
-
-def build_vocab(
-    path_to_data: str = "data/english.txt",
-    specials: list = [],
-) -> (torchtext.vocab, int):
+def decode(enc_sec: torch.Tensor, tokenizer: any) -> str:
     """
-    The function build vocabulary from the input text dataset
-    Parameters:
-    path_to_data (str): path to the data file
-    specials (list): list of special symbols
-    Returns:
-    vocab, vocab_size (vocab, int): vocabulary and its length
+    Function to decode a sequence of token indices back to a string
     """
-    tokenizer = get_tokenizer("basic_english")
-    iterator = _yield_tokens(path_to_data, tokenizer)
-    vocab = build_vocab_from_iterator(iterator, specials=specials)
-    vocab_size = len(vocab)
-    return vocab, vocab_size
-
-
-def _yield_tokens(filepath, tokenizer):
-    """
-    Iterator through the tokens of the input
-    We need iterator to build vocabulary with
-    build_vocab_from_iterator from torchtext.vocab
-    """
-    data_arr = open(filepath, encoding="utf-8").read().split("\n")
-    for phrase in data_arr:
-        tokens = tokenizer(phrase)
-        yield tokens
+    # convert the indices to a list
+    enc_sec = enc_sec.tolist()
+    # decode the indices to a string
+    text = tokenizer.decode(enc_sec)
+    return text
 
 
 def get_batch(data: list[str], block_size: int, batch_size: int):
