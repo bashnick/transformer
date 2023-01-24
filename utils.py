@@ -1,7 +1,5 @@
 import os
 import torch
-from torchtext.data.utils import get_tokenizer
-from torchtext.vocab import build_vocab_from_iterator
 from datetime import datetime
 
 # hyperparameters

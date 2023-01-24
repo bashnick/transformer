@@ -71,9 +71,7 @@ for step in range(MAX_ITER):
         loss_val = estimate_loss(
             data=val_data, model=m, block_size=BLOCK_SIZE, batch_size=BATCH_SIZE
         )
-        print(
-            f"step {step:10} | train loss {loss_train:6.4f} | val loss {loss_val:6.4f}"
-        )
+        print("step {:10} | train loss {:6.4f} | val loss {:6.4f}".format(step, loss_train, loss_val))
 
     # sample a batch of data
     xb, yb = get_batch(data=train_data, block_size=BLOCK_SIZE, batch_size=BATCH_SIZE)

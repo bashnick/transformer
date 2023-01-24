@@ -1,0 +1,4 @@
+python>=3.9
+torch>=1.13.1
+transformers>=4.25.1
+numpy
