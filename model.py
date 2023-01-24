@@ -75,7 +75,7 @@ class FeedForward(nn.Module):
         super().__init__()
         self.net = nn.Sequential(
             # in the Attention is All You Need paper
-            # they are using the size of the ffwd layer 2048
+            # authors are using the size of the ffwd layer 2048
             # and the output of the model is 512
             # so we apply the same factor of 4
             nn.Linear(num_embed, 4 * num_embed),

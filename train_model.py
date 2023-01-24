@@ -81,11 +81,10 @@ for step in range(MAX_ITER):
     optimizer.zero_grad(set_to_none=True)
     loss.backward()
     optimizer.step()
-    # if step % 500 == 0:
-    #     print("Step: {:6} | Loss: {:6.2f}".format(step, loss.item()))
 
 save_model_to_chekpoint(model=m, path_to_checkpoint="checkpoints", epoch=step)
 
+# generate some output based on the cntext
 context = torch.zeros((1, 1), dtype=torch.long, device=DEVICE)
 print(
     decode(
