@@ -76,13 +76,18 @@ for step in range(MAX_ITER):
     # sample a batch of data
     xb, yb = get_batch(data=train_data, block_size=BLOCK_SIZE, batch_size=BATCH_SIZE)
     logits, loss = m.forward(xb, yb)
+    # zero_grad() method sets the gradients of all parameters in the optimizer to zero
     optimizer.zero_grad(set_to_none=True)
+    # backward() method on the loss variable calculates the gradients 
+    # of the loss with respect to the model's parameters.
     loss.backward()
+    # step() method on the optimizer updates the model's parameters 
+    # using the calculated gradients, in order to minimize the loss.
     optimizer.step()
 
 save_model_to_chekpoint(model=m, path_to_checkpoint="checkpoints", epoch=step)
 
-# generate some output based on the cntext
+# generate some output based on the context
 context = torch.zeros((1, 1), dtype=torch.long, device=DEVICE)
 print(
     decode(
