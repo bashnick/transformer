@@ -8,7 +8,7 @@ $ git clone https://github.com/bashnick/transformer.git
 $ cd transformer
 $ conda create --name transformer python=3.9 -y
 $ conda activate transformer
-$ pip install requirements.txt
+$ pip install -r requirements.txt
 ```
 ## Data
 Data is taken from the [DCEP: Digital Corpus of the European Parliament](https://joint-research-centre.ec.europa.eu/language-technology-resources/dcep-digital-corpus-european-parliament_en#Format%20and%20Structure%20of%20the%20Data). It has a variety of document types, from press releases to session and legislative documents related to European Parliament's activities and bodies. The current version of the corpus contains documents
